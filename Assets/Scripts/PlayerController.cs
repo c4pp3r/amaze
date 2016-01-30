@@ -12,6 +12,11 @@ public class PlayerController : MonoBehaviour {
     public AudioSource impactSource;
     public AudioSource winSource;
 
+	public Animator anim;
+	public Camera MainCamera;
+	public Camera BirdsEye;
+
+
     private Rigidbody rb;
     //private AudioSource audioSource;
     private Vector3 lastPosition;
@@ -23,6 +28,11 @@ public class PlayerController : MonoBehaviour {
         //audioSource = GetComponent<AudioSource>();
 
         winText.text = string.Empty;
+
+		anim = GetComponent<Animator>();
+
+		MainCamera.enabled = true;
+		BirdsEye.enabled = false;
 	}
 
 	private string getTimer() {
@@ -37,10 +47,14 @@ public class PlayerController : MonoBehaviour {
     }
 
 	void FixedUpdate() {
+
 		float moveHorizontal = Input.GetAxis ("Horizontal");
 		float moveVertical = Input.GetAxis ("Vertical");
 
 		Vector3 movement = new Vector3 (moveHorizontal, 0.0f, moveVertical);
+
+		anim.SetFloat ("moveHorizontal", moveHorizontal); 
+		anim.SetFloat ("moveVertical", moveVertical);
 
         if (moveHorizontal == 0f && moveVertical == 0f)
         {
@@ -61,7 +75,26 @@ public class PlayerController : MonoBehaviour {
         {
             SetCountText();
         }
+
+		if(Input.GetKeyDown(KeyCode.E))
+		{
+
+			MainCamera.enabled = false;
+			BirdsEye.enabled = true;
+
+		}
+
+
+		if(Input.GetKeyDown(KeyCode.R))
+		{
+
+			MainCamera.enabled = true;
+			BirdsEye.enabled = false;
+
+		}
+
 	}
+
 
 	void OnTriggerEnter(Collider other) {
 		if(other.gameObject.CompareTag("Pick Up")) {
@@ -90,4 +123,5 @@ public class PlayerController : MonoBehaviour {
             winSource.Play();
         }
 	}
+
 }
